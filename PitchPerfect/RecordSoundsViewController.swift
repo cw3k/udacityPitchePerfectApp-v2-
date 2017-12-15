@@ -6,31 +6,38 @@
 //  Copyright © 2017 codeWarrior928. All rights reserved.
 //
 
+// Mark: Imports
+
 import UIKit
 import AVFoundation
 
 class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
+    // Mark: Member variables
     
     var audioRecorder: AVAudioRecorder!
+    
+    // Mark: Outlets
     
     @IBOutlet weak var recordingLabel: UILabel!
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var stopRecordingButton: UIButton!
     
+    // Mark: Initial Load
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        stopRecordingButton.isEnabled = false
+        configureUI(playState: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("viewWillAppear called")
     }
+    
+    // Mark: Recording
     
     @IBAction func recordAudio(_ sender: Any) {
         recordingLabel.text = "Recording in Progress"
-        stopRecordingButton.isEnabled = true
-        recordButton.isEnabled = false
+        configureUI(playState: false)
         
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
         let recordingName = "recordedVoice.wav"
@@ -64,6 +71,9 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     
+    
+    // Mark: Transitioning between controllers
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "stopRecording") {
             let playSoundsVC = segue.destination as! PlaySoundsViewController
@@ -72,14 +82,25 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     
+    // Mark: Configuring UI
+    
     func configureUI(playState: Bool) {
         if(playState) {
-            recordButton.isEnabled = true
-            stopRecordingButton.isEnabled = false
+            enableRecordButton()
         } else {
-            recordButton.isEnabled = false
-            stopRecordingButton.isEnabled = true
+            disableRecordingButton()
         }
     }
+    
+    func enableRecordButton() {
+        recordButton.isEnabled = true
+        stopRecordingButton.isEnabled = false
+    }
+    
+    func disableRecordingButton() {
+        recordButton.isEnabled = false
+        stopRecordingButton.isEnabled = true
+    }
+
 }
 
